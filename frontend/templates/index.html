@@ -6,7 +6,7 @@
     <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold text-dark">Alexandria University Bookstore</h1>
         <p class="col-md-8 fs-4 mx-auto text-muted">
-            Browse our extensive collection of academic and leisure readings. 
+            Browse our extensive collection of academic and leisure readings.
             From Science to History, find what you need instantly.
         </p>
 
@@ -47,7 +47,7 @@
                 </form>
             </div>
         </div>
-        
+
         <div class="mt-3">
             <span class="text-muted me-2 small">Quick Browse:</span>
             <a href="/search?category=Science" class="badge rounded-pill bg-white text-primary border border-primary text-decoration-none p-2 me-1">Science</a>
@@ -69,7 +69,7 @@
 </div>
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-    
+
     <div class="col">
         <div class="card h-100 shadow-sm border-0 h-100">
             <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 250px;">
@@ -134,5 +134,29 @@
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+        const selectedLabel = document.getElementById('selectedLabel');
+        const hiddenInput = document.getElementById('searchTypeInput');
+
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault(); // Stop link behavior
+
+                // 1. Update the button text (Visual)
+                selectedLabel.textContent = this.textContent;
+
+                // 2. Update the hidden input value (Functional)
+                hiddenInput.value = this.getAttribute('data-value');
+
+                // 3. Highlight the selected item
+                dropdownItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+</script>
 
 {% endblock %}
