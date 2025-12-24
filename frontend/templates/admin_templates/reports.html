@@ -1,0 +1,157 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="fas fa-chart-line me-2 text-primary"></i>System Reports</h2>
+    <button class="btn btn-outline-primary" onclick="window.print()">
+        <i class="fas fa-print me-2"></i>Print Report
+    </button>
+</div>
+
+<h5 class="text-secondary border-bottom pb-2 mb-3">Sales Performance</h5>
+<div class="row g-4 mb-5">
+    
+    <div class="col-md-6">
+        <div class="card h-100 border-primary border-start border-4 shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small fw-bold">Sales (Previous Month)</h6>
+                <div class="d-flex align-items-center mt-2">
+                    <h2 class="display-6 fw-bold mb-0 text-dark">$42,590.00</h2>
+                    <span class="badge bg-success bg-opacity-10 text-success ms-3">
+                        <i class="fas fa-arrow-up"></i> 12% vs avg
+                    </span>
+                </div>
+                <p class="text-muted small mt-2 mb-0">November 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted text-uppercase small fw-bold">Sales by Specific Date</h6>
+                <form action="/report/daily_sales" method="POST" class="mt-3">
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="report_date" required>
+                        <button class="btn btn-primary" type="submit">Get Report</button>
+                    </div>
+                </form>
+                <div class="mt-3 p-2 bg-light rounded d-none" id="dailySalesResult">
+                    <span class="text-muted small">Total for Selected Date:</span> 
+                    <strong class="text-dark">$0.00</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-bold">
+                Top 5 Customers (Last 3 Months)
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-striped mt-2">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Customer Name</th>
+                            <th class="text-end">Total Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Alice Johnson</td>
+                            <td class="text-end">$1,200</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Mohamed Ali</td>
+                            <td class="text-end">$980</td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-bold">
+                Top Selling Books (Last 3 Months)
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Book Title</th>
+                            <th class="text-end">Copies Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-warning text-dark">1</span></td>
+                            <td>Intro to Algorithms</td>
+                            <td class="text-end">150</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-secondary">2</span></td>
+                            <td>Clean Architecture</td>
+                            <td class="text-end">120</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-secondary">3</span></td>
+                            <td>Harry Potter Vol 1</td>
+                            <td class="text-end">115</td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold">
+                Replenishment History (Orders per Book)
+            </div>
+            <div class="card-body">
+                <p class="small text-muted">Shows how many times the admin placed orders for a particular book.</p>
+                <div class="input-group mb-3" style="max-width: 400px;">
+                    <input type="text" class="form-control" placeholder="Search Book Title...">
+                    <button class="btn btn-outline-secondary" type="button">Filter</button>
+                </div>
+                
+                <table class="table table-bordered">
+                    <thead>
+                        <tr class="table-light">
+                            <th>ISBN</th>
+                            <th>Book Title</th>
+                            <th>Times Ordered</th>
+                            <th>Last Order Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>978-3-16-148410-0</td>
+                            <td>Modern Operating Systems</td>
+                            <td>4 times</td>
+                            <td>2025-10-05</td>
+                        </tr>
+                         <tr>
+                            <td>978-0-13-235088-4</td>
+                            <td>Clean Code</td>
+                            <td>2 times</td>
+                            <td>2025-09-12</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

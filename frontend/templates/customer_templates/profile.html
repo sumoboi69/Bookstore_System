@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0 fw-bold text-primary"><i class="fas fa-user-edit me-2"></i>My Profile</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/update_profile" method="POST">
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Personal Information</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" name="fname" value="Mohamed" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" name="lname" value="Kasem" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" value="mkasem@example.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-control" name="phone" value="+20 123 456 7890">
+                            </div>
+                        </div>
+
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Shipping Details</h6>
+                        <div class="mb-4">
+                            <label class="form-label">Default Address</label>
+                            <textarea class="form-control" name="address" rows="3">123 Alexandria St, Gleem, Alexandria, Egypt</textarea>
+                        </div>
+
+                        <h6 class="text-uppercase text-muted small fw-bold mb-3">Security</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">New Password (Optional)</label>
+                                <input type="password" class="form-control" name="password" placeholder="Leave blank to keep current">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" name="confirm_password">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="/" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

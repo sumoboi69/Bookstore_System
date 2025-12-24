@@ -1,0 +1,227 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #3498db;
+    --bg-light: #f8f9fa;
+    --text-muted: #6c757d;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--secondary-color);
+}
+
+/* --- Navbar Styling --- */
+.navbar {
+    background: #fff;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--primary-color) !important;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: var(--secondary-color) !important;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+/* --- Card & Hover Effects --- */
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    padding: 0.5rem 1.2rem;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+/* --- Badges & Icons --- */
+.icon-circle {
+    transition: transform 0.3s;
+}
+
+.card:hover .icon-circle {
+    transform: scale(1.1);
+}
+
+/* --- Table Styling --- */
+.table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+/* --- Forms --- */
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+}
+
+/* --- Navbar Alignments --- */
+.navbar-nav .nav-link {
+    display: flex;
+    align-items: center;
+}
+
+/* Navbar Search Input sizing (Keep this for the top menu) */
+.search-navbar .input-group {
+    width: 250px;
+}
+
+/* Fix for the red cart badge */
+.badge.translate-middle {
+    margin-left: -5px !important;
+    margin-top: 5px !important;
+}
+
+/* --- Premium Search Bar Styling (The Main Search) --- */
+
+.search-container {
+    display: flex;
+    align-items: center;
+    border-radius: 50px; /* Super rounded pill */
+    padding: 5px;
+    border: 1px solid rgba(0,0,0,0.08);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Lift effect on hover */
+.search-container:hover,
+.search-container:focus-within {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    border-color: transparent;
+}
+
+/* --- The "Bubble" Container --- */
+.dropdown-bubble {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa; /* Light grey bubble background */
+    border-radius: 30px;       /* Fully rounded independent bubble */
+    margin-left: 5px;
+    padding-right: 10px;
+    transition: background-color 0.2s;
+}
+
+.dropdown-bubble:hover {
+    background-color: #e9ecef; /* Darker grey on hover */
+}
+
+/* --- Input & Text Styling --- */
+.search-container input {
+    font-size: 1.05rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* Remove default blue outlines */
+.search-container input:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.search-container input::placeholder {
+    color: #adb5bd;
+    font-weight: 400;
+}
+
+/* Button Height Fix */
+.search-container button {
+    height: 48px; /* Matches the visual height of input */
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+}
+
+/* --- Custom Rounded Dropdown Menu (The List) --- */
+
+.dropdown-menu {
+    border-radius: 20px !important; /* Forces the list to be rounded */
+    overflow: hidden;               /* KEEPS it rounded even if items are blue/active */
+    padding: 0;                     /* Remove padding so the blue hover fills the edge */
+    margin-top: 10px !important;    /* Adds space between bubble and list */
+    animation: fadeIn 0.3s ease;    /* Slower, smoother fade */
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Softer shadow */
+}
+
+.dropdown-item {
+    padding: 12px 20px;            /* More breathing room */
+    font-weight: 500;
+    color: var(--secondary-color);
+    transition: all 0.2s;
+    border-bottom: 1px solid rgba(0,0,0,0.03); /* Subtle separator */
+}
+
+/* Remove border from the last item so it looks clean */
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;     /* Light grey hover */
+    color: var(--primary-color);
+    padding-left: 25px;            /* Slide text slightly on hover */
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* Fix for the toggle arrow alignment */
+.dropdown-toggle::after {
+    margin-left: 0.8em;
+    opacity: 0.5;
+    vertical-align: middle;
+}
+
+/* --- FIXED ANIMATION (No Transform) --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

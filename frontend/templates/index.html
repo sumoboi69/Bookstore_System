@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm text-center" style="background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold text-dark">Alexandria University Bookstore</h1>
+        <p class="col-md-8 fs-4 mx-auto text-muted">
+            Browse our extensive collection of academic and leisure readings. 
+            From Science to History, find what you need instantly.
+        </p>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-9 col-lg-8">
+                <form action="/search" method="GET" class="search-container bg-white shadow-lg">
+
+                    <div class="dropdown-bubble dropdown">
+                        <button class="btn btn-link text-decoration-none dropdown-toggle text-dark fw-bold border-0 shadow-none d-flex align-items-center"
+                                type="button"
+                                id="searchTypeDropdown"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                style="padding-left: 15px;">
+                            <i class="fas fa-filter text-muted me-2 small"></i>
+                            <span id="selectedLabel">Title</span>
+                        </button>
+
+                        <input type="hidden" name="search_type" id="searchTypeInput" value="title">
+
+                        <ul class="dropdown-menu shadow-lg border-0 mt-2" aria-labelledby="searchTypeDropdown" style="border-radius: 15px; min-width: 140px;">
+                            <li><a class="dropdown-item active" href="#" data-value="title">Title</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="isbn">ISBN</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="author">Author</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="publisher">Publisher</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="vr my-auto mx-2 text-secondary opacity-25" style="height: 30px;"></div>
+
+                    <div class="flex-grow-1 position-relative">
+                        <input type="text" name="q" class="form-control border-0 shadow-none bg-transparent ps-3" placeholder="Search keywords..." style="height: 55px;" required>
+                    </div>
+
+                    <button class="btn btn-primary rounded-pill px-4 m-1 shadow-sm fw-bold" type="submit">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <span class="text-muted me-2 small">Quick Browse:</span>
+            <a href="/search?category=Science" class="badge rounded-pill bg-white text-primary border border-primary text-decoration-none p-2 me-1">Science</a>
+            <a href="/search?category=Art" class="badge rounded-pill bg-white text-danger border border-danger text-decoration-none p-2 me-1">Art</a>
+            <a href="/search?category=History" class="badge rounded-pill bg-white text-success border border-success text-decoration-none p-2 me-1">History</a>
+            <a href="/search?category=Geography" class="badge rounded-pill bg-white text-warning border border-warning text-decoration-none p-2 me-1">Geography</a>
+            <a href="/search?category=Religion" class="badge rounded-pill bg-white text-info border border-info text-decoration-none p-2">Religion</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3 align-items-center">
+    <div class="col">
+        <h2 class="h4 border-start border-4 border-primary ps-3">New Arrivals</h2>
+    </div>
+    <div class="col text-end">
+        <a href="/search" class="btn btn-outline-secondary btn-sm">View All Books</a>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+    
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 h-100">
+            <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 250px;">
+                <i class="fas fa-book fa-3x text-secondary"></i>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-truncate">Database System Concepts</h5>
+                <p class="card-text text-muted small mb-1">By A. Silberschatz</p>
+                <div class="mb-2">
+                    <span class="badge bg-light text-dark border">Science</span>
+                </div>
+                <h5 class="text-primary fw-bold mt-auto">$120.00</h5>
+            </div>
+            <div class="card-footer bg-white border-top-0 d-grid gap-2 pb-3">
+                <a href="/book/1" class="btn btn-outline-dark btn-sm">View Details</a>
+                <button class="btn btn-primary btn-sm add-to-cart" data-id="1">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 250px;">
+                <i class="fas fa-book fa-3x text-secondary"></i>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-truncate">History of Modern Art</h5>
+                <p class="card-text text-muted small mb-1">By H. H. Arnason</p>
+                <div class="mb-2">
+                    <span class="badge bg-light text-dark border">Art</span>
+                </div>
+                <h5 class="text-primary fw-bold mt-auto">$85.50</h5>
+            </div>
+            <div class="card-footer bg-white border-top-0 d-grid gap-2 pb-3">
+                <a href="/book/2" class="btn btn-outline-dark btn-sm">View Details</a>
+                <button class="btn btn-primary btn-sm add-to-cart" data-id="2">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 opacity-75">
+            <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 250px;">
+                <i class="fas fa-book fa-3x text-secondary"></i>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-truncate">World Geography</h5>
+                <p class="card-text text-muted small mb-1">By R. Boehm</p>
+                <div class="mb-2">
+                    <span class="badge bg-light text-dark border">Geography</span>
+                </div>
+                <h5 class="text-primary fw-bold mt-auto">$50.00</h5>
+            </div>
+            <div class="card-footer bg-white border-top-0 d-grid gap-2 pb-3">
+                <button class="btn btn-secondary btn-sm" disabled>Out of Stock</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
