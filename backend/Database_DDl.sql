@@ -49,11 +49,14 @@ CREATE TABLE AUTHOR (
 );
 
 -- BOOK_AUTHOR (Many-to-Many relationship)
+-- BUSINESS RULE: Every book MUST have at least one author.
+-- This is enforced at the application level (admin interface validation).
+-- Books can have multiple authors (co-authored works).
 CREATE TABLE BOOK_AUTHOR (
     ISBN VARCHAR(20) NOT NULL,
     Author_ID INT NOT NULL,
     PRIMARY KEY (ISBN, Author_ID),
-    FOREIGN KEY (ISBN) REFERENCES BOOK(ISBN),
+    FOREIGN KEY (ISBN) REFERENCES BOOK(ISBN) ON DELETE CASCADE,
     FOREIGN KEY (Author_ID) REFERENCES AUTHOR(Author_ID)
 );
 
@@ -223,6 +226,29 @@ BEGIN
     FROM CART_ITEM ci
     JOIN SHOPPING_CART sc ON ci.Cart_ID = sc.Cart_ID
     WHERE sc.Customer_Username = OLD.Username;
+END;
+//
+DELIMITER ;
+
+-- TRIGGER 5: Prevent deletion of the last author from a book
+-- This enforces the business rule that every book must have at least one author
+DELIMITER //
+CREATE TRIGGER before_book_author_delete
+BEFORE DELETE ON BOOK_AUTHOR
+FOR EACH ROW
+BEGIN
+    DECLARE author_count INT;
+
+    -- Count how many authors this book will have after deletion
+    SELECT COUNT(*) INTO author_count
+    FROM BOOK_AUTHOR
+    WHERE ISBN = OLD.ISBN AND (ISBN != OLD.ISBN OR Author_ID != OLD.Author_ID);
+
+    -- If this would leave the book with 0 authors, prevent deletion
+    IF author_count = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'ERROR: Cannot remove the last author from a book. Every book must have at least one author.';
+    END IF;
 END;
 //
 DELIMITER ;

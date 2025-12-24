@@ -15,13 +15,14 @@ INSERT INTO PUBLISHER (Name, Address, Phone_Number) VALUES
 ------------------------------------------------------------
 INSERT INTO AUTHOR (First_Name, Last_Name) VALUES 
 ('Isaac', 'Asimov'),
-('Carl', 'Sagan'),
+('Douglas', 'Adams'),
 ('Yuval Noah', 'Harari'),
-('Stephen', 'Hawking'),
-('Neil', 'Gaiman'),
-('J.K.', 'Rowling'),
-('Walter', 'Isaacson'),
-('Donald', 'Knuth');
+('F. Scott', 'Fitzgerald'),
+('Steve', 'Souders'),
+('Leo', 'Tolstoy'),
+('Virginia', 'Woolf'),
+('Donald', 'Knuth'),
+('Mohamed', 'Kasem'); -- Author of MK's Suicide Book
 
 -- 3. POPULATE BOOKS
 -- Note: Publisher_ID references the PUBLISHER table (IDs 1-5 created above)
@@ -33,27 +34,33 @@ INSERT INTO BOOK (ISBN, Title, Publication_Year, Selling_Price, Category, Publis
 ('978-0743273565', 'The Great Gatsby', 1925, 10.99, 'Art', 3, 200, 20),
 ('978-0596520687', 'High Performance Web Sites', 2007, 29.99, 'Science', 4, 40, 5),
 ('978-0131103627', 'The C Programming Language', 1988, 55.00, 'Science', 5, 30, 5),
-('978-1400079988', 'War and Peace', 1869, 14.50, 'History', 1, 5, 10); -- Below threshold (will trigger order on update)
+('978-1400079988', 'War and Peace', 1920, 14.50, 'History', 1, 5, 10); -- Below threshold (will trigger order on update)
 
 -- 4. LINK BOOKS TO AUTHORS
 ------------------------------------------------------------
 INSERT INTO BOOK_AUTHOR (ISBN, Author_ID) VALUES 
-('978-0553293357', 1), -- Foundation by Asimov
-('978-0062316097', 3), -- Sapiens by Harari
-('978-0131103627', 8); -- C Lang by Knuth
+('978-0553293357', 1), -- Foundation by Isaac Asimov
+('978-0345391803', 2), -- The Hitchhiker's Guide to the Galaxy by Douglas Adams
+('978-0062316097', 3), -- Sapiens by Yuval Noah Harari
+('978-0743273565', 4), -- The Great Gatsby by F. Scott Fitzgerald
+('978-0596520687', 5), -- High Performance Web Sites by Steve Souders
+('978-0131103627', 8), -- The C Programming Language by Donald Knuth
+('978-1400079988', 6), -- War and Peace by Leo Tolstoy
+('978-1234567890', 9); -- MK's Suicide Book by Mohamed Kasem
 
 -- 5. POPULATE USERS (ADMINS AND CUSTOMERS)
 -- Step 5a: Create USER_ACCOUNT records first
+-- NOTE: These passwords need to be hashed before use. Run fix_passwords.py after populating data.
 ------------------------------------------------------------
 INSERT INTO USER_ACCOUNT (Username, Password, Last_Name, First_Name, Email_Address, Phone_Number, Shipping_Address, Account_Type) VALUES 
--- Admin User
-('admin_alice', 'securepass1', 'Wonder', 'Alice', 'alice@bookstore.com', NULL, NULL, 'Admin'),
+-- Admin User (password will be hashed to: securepass1)
+('admin_alice', 'TEMP_PASSWORD_NEEDS_HASHING_1', 'Wonder', 'Alice', 'alice@bookstore.com', NULL, NULL, 'Admin'),
 
--- Customer User 1
-('cust_bob', 'securepass2', 'Builder', 'Bob', 'bob@gmail.com', '555-0101', '123 Construction Ln, Builder City', 'Customer'),
+-- Customer User 1 (password will be hashed to: securepass2)
+('cust_bob', 'TEMP_PASSWORD_NEEDS_HASHING_2', 'Builder', 'Bob', 'bob@gmail.com', '555-0101', '123 Construction Ln, Builder City', 'Customer'),
 
--- Customer User 2
-('cust_charlie', 'securepass3', 'Chocolate', 'Charlie', 'charlie@factory.com', '555-0202', '456 Sweet St, Candy Town', 'Customer');
+-- Customer User 2 (password will be hashed to: securepass3)
+('cust_charlie', 'TEMP_PASSWORD_NEEDS_HASHING_3', 'Chocolate', 'Charlie', 'charlie@factory.com', '555-0202', '456 Sweet St, Candy Town', 'Customer');
 
 -- Step 5b: Create Subclass records (ADMIN and CUSTOMER)
 ------------------------------------------------------------
