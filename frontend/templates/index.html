@@ -64,98 +64,132 @@
         <h2 class="h4 border-start border-4 border-primary ps-3">New Arrivals</h2>
     </div>
     <div class="col text-end">
-        <a href="/search" class="btn btn-outline-secondary btn-sm">View All Books</a>
+        <a href="/search?q=" class="btn btn-outline-secondary btn-sm">View All Books</a>
     </div>
 </div>
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-
-    <div class="col">
-        <div class="card h-100 shadow-sm border-0 h-100">
-            <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 250px;">
-                <i class="fas fa-book fa-3x text-secondary"></i>
-            </div>
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title text-truncate">Database System Concepts</h5>
-                <p class="card-text text-muted small mb-1">By A. Silberschatz</p>
-                <div class="mb-2">
-                    <span class="badge bg-light text-dark border">Science</span>
+    {% if new_arrivals %}
+        {% for book in new_arrivals %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <!-- Category-based gradient background instead of image -->
+                <div class="d-flex align-items-center justify-content-center position-relative overflow-hidden" style="height: 250px;
+                    {% if book.Category == 'Science' %}
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    {% elif book.Category == 'Art' %}
+                        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                    {% elif book.Category == 'History' %}
+                        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                    {% elif book.Category == 'Geography' %}
+                        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+                    {% elif book.Category == 'Religion' %}
+                        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+                    {% else %}
+                        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+                    {% endif %}
+                ">
+                    <div class="text-center text-white">
+                        <i class="fas fa-book-open fa-4x mb-2 opacity-75"></i>
+                        <div class="fw-bold text-uppercase small opacity-75">{{ book.Category }}</div>
+                    </div>
+                    <!-- Stock badge -->
+                    {% if book.Stock_Quantity <= book.Stock_Threshold %}
+                    <span class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark">
+                        <i class="fas fa-exclamation-triangle"></i> Low Stock
+                    </span>
+                    {% endif %}
                 </div>
-                <h5 class="text-primary fw-bold mt-auto">$120.00</h5>
-            </div>
-            <div class="card-footer bg-white border-top-0 d-grid gap-2 pb-3">
-                <a href="/book/1" class="btn btn-outline-dark btn-sm">View Details</a>
-                <button class="btn btn-primary btn-sm add-to-cart" data-id="1">
-                    <i class="fas fa-cart-plus"></i> Add to Cart
-                </button>
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-truncate" title="{{ book.Title }}">{{ book.Title }}</h5>
+                    <p class="card-text text-muted small mb-1">
+                        {% if book.Authors %}
+                        <i class="fas fa-user-edit me-1"></i>{{ book.Authors }}
+                        {% else %}
+                        <i class="fas fa-user-edit me-1"></i>Unknown Author
+                        {% endif %}
+                    </p>
+                    <p class="card-text text-muted small mb-2">
+                        <i class="fas fa-building me-1"></i>{{ book.Publisher_Name }}
+                    </p>
+                    <div class="mb-2">
+                        <span class="badge
+                            {% if book.Category == 'Science' %}bg-purple{% endif %}
+                            {% if book.Category == 'Art' %}bg-danger{% endif %}
+                            {% if book.Category == 'History' %}bg-info{% endif %}
+                            {% if book.Category == 'Geography' %}bg-success{% endif %}
+                            {% if book.Category == 'Religion' %}bg-warning text-dark{% endif %}
+                        ">{{ book.Category }}</span>
+                        <span class="badge bg-light text-dark border ms-1">
+                            <i class="fas fa-calendar"></i> {{ book.Publication_Year }}
+                        </span>
+                    </div>
+                    <h5 class="text-primary fw-bold mt-auto">${{ "%.2f"|format(book.Selling_Price) }}</h5>
+                    <small class="text-muted">
+                        <i class="fas fa-boxes"></i> {{ book.Stock_Quantity }} in stock
+                    </small>
+                </div>
+
+                <div class="card-footer bg-white border-top-0 d-grid gap-2 pb-3">
+                    <a href="/book/{{ book.ISBN }}" class="btn btn-outline-dark btn-sm">
+                        <i class="fas fa-info-circle"></i> View Details
+                    </a>
+                    {% if current_user.is_authenticated and not current_user.is_admin %}
+                        {% if book.Stock_Quantity > 0 %}
+                        <form action="/add_to_cart" method="POST">
+                            <input type="hidden" name="isbn" value="{{ book.ISBN }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary btn-sm w-100">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-secondary btn-sm" disabled>Out of Stock</button>
+                        {% endif %}
+                    {% elif not current_user.is_authenticated %}
+                        <a href="/login" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-sign-in-alt"></i> Login to Purchase
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="col">
-        <div class="card h-100 shadow-sm border-0">
-            <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 250px;">
-                <i class="fas fa-book fa-3x text-secondary"></i>
-            </div>
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title text-truncate">History of Modern Art</h5>
-                <p class="card-text text-muted small mb-1">By H. H. Arnason</p>
-                <div class="mb-2">
-                    <span class="badge bg-light text-dark border">Art</span>
-                </div>
-                <h5 class="text-primary fw-bold mt-auto">$85.50</h5>
-            </div>
-            <div class="card-footer bg-white border-top-0 d-grid gap-2 pb-3">
-                <a href="/book/2" class="btn btn-outline-dark btn-sm">View Details</a>
-                <button class="btn btn-primary btn-sm add-to-cart" data-id="2">
-                    <i class="fas fa-cart-plus"></i> Add to Cart
-                </button>
-            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+            <h5>No books available yet</h5>
+            <p class="text-muted">Check back soon for new arrivals!</p>
         </div>
-    </div>
-
-    <div class="col">
-        <div class="card h-100 shadow-sm border-0 opacity-75">
-            <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="height: 250px;">
-                <i class="fas fa-book fa-3x text-secondary"></i>
-            </div>
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title text-truncate">World Geography</h5>
-                <p class="card-text text-muted small mb-1">By R. Boehm</p>
-                <div class="mb-2">
-                    <span class="badge bg-light text-dark border">Geography</span>
-                </div>
-                <h5 class="text-primary fw-bold mt-auto">$50.00</h5>
-            </div>
-            <div class="card-footer bg-white border-top-0 d-grid gap-2 pb-3">
-                <button class="btn btn-secondary btn-sm" disabled>Out of Stock</button>
-            </div>
-        </div>
-    </div>
-
+    {% endif %}
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const dropdownItems = document.querySelectorAll('.dropdown-item');
-        const selectedLabel = document.getElementById('selectedLabel');
-        const hiddenInput = document.getElementById('searchTypeInput');
+        // Only select dropdown items within the search type dropdown (not navbar dropdowns)
+        const searchDropdown = document.getElementById('searchTypeDropdown');
+        if (searchDropdown) {
+            const dropdownItems = searchDropdown.parentElement.querySelectorAll('.dropdown-item');
+            const selectedLabel = document.getElementById('selectedLabel');
+            const hiddenInput = document.getElementById('searchTypeInput');
 
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault(); // Stop link behavior
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault(); // Stop link behavior
 
-                // 1. Update the button text (Visual)
-                selectedLabel.textContent = this.textContent;
+                    // 1. Update the button text (Visual)
+                    selectedLabel.textContent = this.textContent;
 
-                // 2. Update the hidden input value (Functional)
-                hiddenInput.value = this.getAttribute('data-value');
+                    // 2. Update the hidden input value (Functional)
+                    hiddenInput.value = this.getAttribute('data-value');
 
-                // 3. Highlight the selected item
-                dropdownItems.forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
+                    // 3. Highlight the selected item
+                    dropdownItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
             });
-        });
+        }
     });
 </script>
 

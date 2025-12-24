@@ -28,24 +28,35 @@
                                                 <i class="fas fa-book text-secondary fa-lg"></i>
                                             </div>
                                             <div>
-                                                <h6 class="mb-0 fw-bold"><a href="/book/{{ item.isbn }}" class="text-dark text-decoration-none">{{ item.title }}</a></h6>
-                                                <small class="text-muted">ISBN: {{ item.isbn }}</small>
+                                                <h6 class="mb-0 fw-bold"><a href="/book/{{ item.ISBN }}" class="text-dark text-decoration-none">{{ item.Title }}</a></h6>
+                                                <small class="text-muted">ISBN: {{ item.ISBN }}</small>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <button type="button" class="btn btn-outline-secondary">-</button>
-                                            <button type="button" class="btn btn-outline-secondary disabled">{{ item.quantity }}</button>
-                                            <button type="button" class="btn btn-outline-secondary">+</button>
+                                            <form action="/update_cart_quantity" method="POST" style="display: inline;">
+                                                <input type="hidden" name="isbn" value="{{ item.ISBN }}">
+                                                <input type="hidden" name="action" value="decrease">
+                                                <button type="submit" class="btn btn-outline-secondary" title="Decrease quantity">-</button>
+                                            </form>
+                                            <button type="button" class="btn btn-outline-secondary disabled">{{ item.Quantity }}</button>
+                                            <form action="/update_cart_quantity" method="POST" style="display: inline;">
+                                                <input type="hidden" name="isbn" value="{{ item.ISBN }}">
+                                                <input type="hidden" name="action" value="increase">
+                                                <button type="submit" class="btn btn-outline-secondary" title="Increase quantity" {% if item.Quantity >= item.Stock_Quantity %}disabled{% endif %}>+</button>
+                                            </form>
                                         </div>
+                                        {% if item.Quantity >= item.Stock_Quantity %}
+                                        <small class="text-warning d-block mt-1">Max stock reached</small>
+                                        {% endif %}
                                     </td>
                                     <td class="text-end fw-bold">
-                                        ${{ "{:.2f}".format(item.price * item.quantity) }}
+                                        ${{ "{:.2f}".format(item.Selling_Price * item.Quantity) }}
                                     </td>
                                     <td class="text-end">
                                         <form action="/remove_from_cart" method="POST">
-                                            <input type="hidden" name="isbn" value="{{ item.isbn }}">
+                                            <input type="hidden" name="isbn" value="{{ item.ISBN }}">
                                             <button type="submit" class="btn btn-link text-danger p-0" title="Remove item">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>

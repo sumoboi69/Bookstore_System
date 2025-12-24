@@ -17,10 +17,10 @@
                 {% for item in cart_items %}
                 <li class="list-group-item d-flex justify-content-between lh-sm">
                     <div>
-                        <h6 class="my-0">{{ item.title }}</h6>
-                        <small class="text-muted">Qty: {{ item.quantity }}</small>
+                        <h6 class="my-0">{{ item.Title }}</h6>
+                        <small class="text-muted">Qty: {{ item.Quantity }}</small>
                     </div>
-                    <span class="text-muted">${{ "{:.2f}".format(item.price * item.quantity) }}</span>
+                    <span class="text-muted">${{ "{:.2f}".format(item.Selling_Price * item.Quantity) }}</span>
                 </li>
                 {% endfor %}
                 <li class="list-group-item d-flex justify-content-between bg-light">
@@ -64,20 +64,20 @@
 
                     <div class="col-md-6">
                         <label for="cc-number" class="form-label">Credit card number</label>
-                        <input type="text" class="form-control" id="cc-number" name="cc_number" placeholder="0000 0000 0000 0000" required>
-                        <div class="invalid-feedback">Credit card number is required</div>
+                        <input type="text" class="form-control" id="cc-number" name="cc_number" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                        <div class="invalid-feedback">Credit card number is required (16 digits)</div>
                     </div>
 
                     <div class="col-md-3">
                         <label for="cc-expiration" class="form-label">Expiration</label>
-                        <input type="text" class="form-control" id="cc-expiration" name="cc_expiration" placeholder="MM/YY" required>
-                        <div class="invalid-feedback">Expiration date required</div>
+                        <input type="text" class="form-control" id="cc-expiration" name="cc_expiration" placeholder="MM/YY" maxlength="5" required>
+                        <div class="invalid-feedback">Valid expiration date required</div>
                     </div>
 
                     <div class="col-md-3">
                         <label for="cc-cvv" class="form-label">CVV</label>
-                        <input type="text" class="form-control" id="cc-cvv" name="cc_cvv" placeholder="123" required>
-                        <div class="invalid-feedback">Security code required</div>
+                        <input type="text" class="form-control" id="cc-cvv" name="cc_cvv" placeholder="123" maxlength="3" pattern="\d{3}" required>
+                        <div class="invalid-feedback">CVV must be 3 digits</div>
                     </div>
                 </div>
 
@@ -90,4 +90,62 @@
         </div>
     </div>
 </div>
+
+<script>
+// Credit Card Number Formatting - Auto space after every 4 digits
+document.getElementById('cc-number').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\s/g, ''); // Remove spaces
+    let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim(); // Add space after every 4 digits
+
+    // Only allow digits and limit to 16 digits
+    value = value.replace(/\D/g, '').substring(0, 16);
+    formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
+
+    e.target.value = formattedValue;
+});
+
+// Expiry Date Formatting - Auto add / after MM
+document.getElementById('cc-expiration').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+
+    if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+    }
+
+    e.target.value = value;
+});
+
+// Expiry Date Validation
+document.getElementById('cc-expiration').addEventListener('blur', function(e) {
+    let value = e.target.value;
+    let parts = value.split('/');
+
+    if (parts.length === 2) {
+        let month = parseInt(parts[0]);
+        let year = parseInt('20' + parts[1]); // Assume 20XX
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth() + 1;
+        let currentYear = currentDate.getFullYear();
+
+        if (month < 1 || month > 12) {
+            e.target.setCustomValidity('Invalid month (01-12)');
+        } else if (year < currentYear || (year === currentYear && month < currentMonth)) {
+            e.target.setCustomValidity('Card has expired');
+        } else {
+            e.target.setCustomValidity('');
+        }
+    } else {
+        e.target.setCustomValidity('Use format MM/YY');
+    }
+});
+
+document.getElementById('cc-expiration').addEventListener('input', function(e) {
+    e.target.setCustomValidity('');
+});
+
+// CVV - Only allow digits, max 3
+document.getElementById('cc-cvv').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3);
+});
+</script>
 {% endblock %}

@@ -37,12 +37,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in order.items %}
+                                {% for item in order.order_items %}
                                 <tr>
                                     <td class="font-monospace text-muted">{{ item.isbn }}</td>
                                     <td>{{ item.title }}</td>
                                     <td class="text-center">{{ item.quantity }}</td>
-                                    <td class="text-end">${{ item.price }}</td>
+                                    <td class="text-end">${{ "%.2f"|format(item.price) }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

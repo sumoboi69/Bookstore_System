@@ -14,26 +14,26 @@
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <label class="form-label">First Name</label>
-                                <input type="text" class="form-control" name="fname" value="Mohamed" required>
+                                <input type="text" class="form-control" name="fname" value="{{ current_user.first_name }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Last Name</label>
-                                <input type="text" class="form-control" name="lname" value="Kasem" required>
+                                <input type="text" class="form-control" name="lname" value="{{ current_user.last_name }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" value="mkasem@example.com" required>
+                                <input type="email" class="form-control" name="email" value="{{ current_user.email }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Phone</label>
-                                <input type="tel" class="form-control" name="phone" value="+20 123 456 7890">
+                                <input type="tel" class="form-control" name="phone" value="{{ current_user.phone }}">
                             </div>
                         </div>
 
                         <h6 class="text-uppercase text-muted small fw-bold mb-3">Shipping Details</h6>
                         <div class="mb-4">
                             <label class="form-label">Default Address</label>
-                            <textarea class="form-control" name="address" rows="3">123 Alexandria St, Gleem, Alexandria, Egypt</textarea>
+                            <textarea class="form-control" name="address" rows="3">{{ current_user.address }}</textarea>
                         </div>
 
                         <h6 class="text-uppercase text-muted small fw-bold mb-3">Security</h6>

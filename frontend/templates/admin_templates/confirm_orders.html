@@ -7,17 +7,17 @@
             <h2 class="fw-bold mb-1">Publisher Orders</h2>
             <p class="text-muted">Manage replenishment orders sent to publishers.</p>
         </div>
-        <a href="/admin_dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+        <a href="/admin/dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
     </div>
 
     <div class="card bg-light border-0 mb-4 p-3">
-        <form class="row g-3 align-items-end">
+        <form action="/admin/confirm_orders" method="GET" class="row g-3 align-items-end">
             <div class="col-md-4">
                 <label class="form-label small text-muted">Filter by Status</label>
-                <select class="form-select">
-                    <option value="all">All Orders</option>
-                    <option value="pending" selected>Pending Confirmation</option>
-                    <option value="confirmed">History (Confirmed)</option>
+                <select class="form-select" name="status">
+                    <option value="all" {% if request.args.get('status') == 'all' %}selected{% endif %}>All Orders</option>
+                    <option value="pending" {% if request.args.get('status', 'pending') == 'pending' %}selected{% endif %}>Pending Confirmation</option>
+                    <option value="confirmed" {% if request.args.get('status') == 'confirmed' %}selected{% endif %}>History (Confirmed)</option>
                 </select>
             </div>
             <div class="col-md-2">
@@ -42,41 +42,47 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="ps-4 fw-bold">#ORD-2025-001</td>
-                            <td>
-                                <div>Database System Concepts</div>
-                                <div class="small text-muted">ISBN: 978-0073523323</div>
-                            </td>
-                            <td>McGraw-Hill Education</td>
-                            <td><span class="badge bg-secondary rounded-pill">50</span></td>
-                            <td>2025-11-20</td>
-                            <td><span class="badge bg-warning text-dark">Pending</span></td>
-                            <td class="text-end pe-4">
-                                <form action="/confirm_order/1" method="POST">
-                                    <button type="submit" class="btn btn-sm btn-success" title="Confirm receipt of goods">
-                                        <i class="fas fa-check-circle me-1"></i>Confirm
+                        {% if orders %}
+                            {% for order in orders %}
+                            <tr>
+                                <td class="ps-4 fw-bold">#{{ order.Order_ID }}</td>
+                                <td>
+                                    <div>{{ order.Book_Title }}</div>
+                                    <div class="small text-muted">ISBN: {{ order.ISBN }}</div>
+                                </td>
+                                <td>{{ order.Publisher_Name }}</td>
+                                <td><span class="badge bg-secondary rounded-pill">{{ order.Quantity_Ordered }}</span></td>
+                                <td>{{ order.Order_Date.strftime('%Y-%m-%d') if order.Order_Date else 'N/A' }}</td>
+                                <td>
+                                    {% if order.Order_Status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    {% else %}
+                                    <span class="badge bg-success">Confirmed</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end pe-4">
+                                    {% if order.Order_Status == 'Pending' %}
+                                    <form action="/admin/confirm_order/{{ order.Order_ID }}" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Confirm receipt of goods">
+                                            <i class="fas fa-check-circle me-1"></i>Confirm
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                                        Received
                                     </button>
-                                </form>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="ps-4 fw-bold text-muted">#ORD-2025-002</td>
-                            <td>
-                                <div>Clean Code</div>
-                                <div class="small text-muted">ISBN: 978-0132350884</div>
-                            </td>
-                            <td>Pearson</td>
-                            <td><span class="badge bg-secondary rounded-pill">20</span></td>
-                            <td>2025-11-18</td>
-                            <td><span class="badge bg-success">Confirmed</span></td>
-                            <td class="text-end pe-4">
-                                <button class="btn btn-sm btn-outline-secondary" disabled>
-                                    Received
-                                </button>
-                            </td>
-                        </tr>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    No orders found for the selected filter.
+                                </td>
+                            </tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>

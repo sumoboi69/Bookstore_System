@@ -12,7 +12,7 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <h6 class="card-title mb-0">Total Sales (Month)</h6>
-                    <h2 class="my-1">$12,450</h2>
+                    <h2 class="my-1">${{ "{:,.2f}".format(monthly_sales) }}</h2>
                 </div>
                 <i class="fas fa-chart-line fa-2x opacity-50"></i>
             </div>
@@ -23,7 +23,7 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <h6 class="card-title mb-0">Pending Restocks</h6>
-                    <h2 class="my-1">5</h2>
+                    <h2 class="my-1">{{ pending_orders }}</h2>
                 </div>
                 <i class="fas fa-truck-loading fa-2x opacity-50"></i>
             </div>
@@ -34,7 +34,7 @@
             <div class="card-body d-flex align-items-center justify-content-between">
                 <div>
                     <h6 class="card-title mb-0 text-dark">Low Stock Items</h6>
-                    <h2 class="my-1 text-dark">12</h2>
+                    <h2 class="my-1 text-dark">{{ low_stock_count }}</h2>
                 </div>
                 <i class="fas fa-exclamation-triangle fa-2x text-dark opacity-50"></i>
             </div>
@@ -53,7 +53,7 @@
                 </div>
                 <h5 class="card-title">Book Inventory</h5>
                 <p class="card-text text-muted small">Add new books, update stock levels, and modify prices.</p>
-                <a href="/manage_books" class="btn btn-outline-primary stretched-link">Manage Books</a>
+                <a href="/admin/manage_books" class="btn btn-outline-primary stretched-link">Manage Books</a>
             </div>
         </div>
     </div>
@@ -66,7 +66,7 @@
                 </div>
                 <h5 class="card-title">Confirm Orders</h5>
                 <p class="card-text text-muted small">View automated orders placed to publishers and confirm receipt.</p>
-                <a href="/confirm_orders" class="btn btn-outline-success stretched-link">View Orders</a>
+                <a href="/admin/confirm_orders" class="btn btn-outline-success stretched-link">View Orders</a>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 </div>
                 <h5 class="card-title">Analytics Reports</h5>
                 <p class="card-text text-muted small">Sales reports, top customers, and best-selling books.</p>
-                <a href="/reports" class="btn btn-outline-info stretched-link">View Reports</a>
+                <a href="/admin/reports" class="btn btn-outline-info stretched-link">View Reports</a>
             </div>
         </div>
     </div>
