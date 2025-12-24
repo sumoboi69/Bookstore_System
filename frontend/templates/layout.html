@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-            <style>
+    <style>
         body {
             display: flex;
             flex-direction: column;
@@ -22,6 +22,202 @@
         .navbar-brand {
             font-weight: bold;
             color: #2c3e50 !important;
+        }
+
+        /* Easter Egg Modal Styles - Enhanced */
+        #easter-egg-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-in;
+            padding: 20px;
+        }
+
+        #easter-egg-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .easter-egg-content {
+            background: #ffffff;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 1600px;
+            max-height: 92vh;
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+            animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .easter-egg-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .easter-egg-header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .easter-egg-icon {
+            font-size: 2.5rem;
+            animation: bounce 1s ease-in-out;
+        }
+
+        .easter-egg-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .easter-egg-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .easter-egg-header small {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .easter-egg-close {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .easter-egg-close:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(90deg) scale(1.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .easter-egg-tip {
+            background: linear-gradient(135deg, #e0f2fe 0%, #ddd6fe 100%);
+            padding: 14px 24px;
+            border-bottom: 1px solid #e0e7ff;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .easter-egg-tip-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .easter-egg-tip small {
+            color: #4338ca;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .easter-egg-tip a {
+            color: #4338ca;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 4px 12px;
+            background: rgba(67, 56, 202, 0.1);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .easter-egg-tip a:hover {
+            background: rgba(67, 56, 202, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .easter-egg-body {
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+            background: #f8fafc;
+            position: relative;
+        }
+
+        .easter-egg-body iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 850px;
+            border: none;
+            display: block;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .easter-egg-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .easter-egg-hint.show {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -123,7 +319,136 @@
         </div>
     </footer>
 
+    <!-- Easter Egg: Secret Database Diagram Modal -->
+    <div id="easter-egg-modal">
+        <div class="easter-egg-content">
+            <div class="easter-egg-header">
+                <div class="easter-egg-header-content">
+                    <div class="easter-egg-icon">🎉</div>
+                    <div class="easter-egg-title">
+                        <h2>You Found the Easter Egg!</h2>
+                        <small>Interactive Database Schema Diagram</small>
+                    </div>
+                </div>
+                <button class="easter-egg-close" onclick="closeEasterEgg()" aria-label="Close">
+                    ✕
+                </button>
+            </div>
+
+            <div class="easter-egg-tip">
+                <div class="easter-egg-tip-content">
+                    <small>💡 <strong>Pro Tip:</strong> For full zoom control and export options,</small>
+                    <a href="https://drawsql.app/teams/lonely-11/diagrams/final-project" target="_blank">
+                        Open in DrawSQL ↗
+                    </a>
+                </div>
+            </div>
+
+            <div class="easter-egg-body">
+                <iframe
+                    src="https://drawsql.app/teams/lonely-11/diagrams/final-project/embed"
+                    title="Database ER Diagram - Secret Easter Egg"
+                    allowtransparency="true"
+                    allowfullscreen="true"
+                    scrolling="no">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Easter Egg Hint (appears briefly) -->
+    <div id="easter-egg-hint" class="easter-egg-hint">
+        💡 Try typing "schema" or press Ctrl+Shift+D
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- Easter Egg Script -->
+    <script>
+        // Easter Egg Implementation
+        let easterEggSequence = [];
+        const secretWord = 'schema';
+        let hintTimeout;
+
+        // Method 1: Type "schema" anywhere on the page
+        document.addEventListener('keypress', function(e) {
+            easterEggSequence.push(e.key.toLowerCase());
+
+            // Keep only last 6 characters
+            if (easterEggSequence.length > secretWord.length) {
+                easterEggSequence.shift();
+            }
+
+            // Check if sequence matches
+            if (easterEggSequence.join('') === secretWord) {
+                openEasterEgg();
+                easterEggSequence = [];
+            }
+        });
+
+        // Method 2: Ctrl + Shift + D (D for Diagram)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                e.preventDefault();
+                openEasterEgg();
+            }
+        });
+
+        // Method 3: Triple-click on the footer
+        let footerClicks = 0;
+        document.querySelector('footer').addEventListener('click', function() {
+            footerClicks++;
+            if (footerClicks === 3) {
+                openEasterEgg();
+                footerClicks = 0;
+            }
+            setTimeout(() => footerClicks = 0, 1000);
+        });
+
+        // Show hint on page load (only once per session)
+        window.addEventListener('load', function() {
+            if (!sessionStorage.getItem('easterEggHintShown')) {
+                setTimeout(() => {
+                    const hint = document.getElementById('easter-egg-hint');
+                    hint.classList.add('show');
+
+                    setTimeout(() => {
+                        hint.classList.remove('show');
+                    }, 5000);
+
+                    sessionStorage.setItem('easterEggHintShown', 'true');
+                }, 2000);
+            }
+        });
+
+        function openEasterEgg() {
+            // Open schema_viewer.html in a new window
+            const baseUrl = window.location.origin;
+            window.open(
+                baseUrl + '/diagrams/schema_viewer.html',
+                'schema_viewer',
+                'width=1600,height=900,menubar=no,toolbar=no,location=no,status=no'
+            );
+        }
+
+        function closeEasterEgg() {
+            // No longer needed but kept for compatibility
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeEasterEgg();
+            }
+        });
+
+        // Close on background click
+        document.getElementById('easter-egg-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEasterEgg();
+            }
+        });
+    </script>
 </body>
 </html>

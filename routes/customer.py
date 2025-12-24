@@ -1,10 +1,11 @@
 """
 Customer routes: Home, Search, Book Details, Cart, Checkout, Orders, Profile
 """
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
 from flask_login import login_required, current_user
 from database import execute_query, get_db_cursor
 from datetime import datetime
+import os
 
 customer_bp = Blueprint('customer', __name__)
 
@@ -483,4 +484,11 @@ def update_profile():
         flash(f'Error updating profile: {str(e)}', 'danger')
 
     return redirect(url_for('customer.profile'))
+
+
+@customer_bp.route('/diagrams/schema_viewer.html')
+def schema_viewer():
+    """Serve the schema viewer HTML file (Easter Egg)"""
+    diagrams_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'diagrams')
+    return send_from_directory(diagrams_folder, 'schema_viewer.html')
 
