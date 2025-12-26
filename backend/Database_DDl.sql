@@ -214,23 +214,7 @@ END;
 //
 DELIMITER ;
 
--- TRIGGER 4: Remove all items from shopping cart upon Customer Logout
-DELIMITER //
-CREATE TRIGGER before_customer_logout
-BEFORE DELETE ON CUSTOMER
-FOR EACH ROW
-BEGIN
-    -- Deleting the CUSTOMER record (via the cascading delete from USER_ACCOUNT)
-    -- will trigger this, so we use it to clean up the cart items associated with that customer.
-    DELETE ci
-    FROM CART_ITEM ci
-    JOIN SHOPPING_CART sc ON ci.Cart_ID = sc.Cart_ID
-    WHERE sc.Customer_Username = OLD.Username;
-END;
-//
-DELIMITER ;
-
--- TRIGGER 5: Prevent deletion of the last author from a book
+-- TRIGGER 4: Prevent deletion of the last author from a book
 -- This enforces the business rule that every book must have at least one author
 DELIMITER //
 CREATE TRIGGER before_book_author_delete
@@ -252,3 +236,4 @@ BEGIN
 END;
 //
 DELIMITER ;
+

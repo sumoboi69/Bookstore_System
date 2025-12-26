@@ -105,6 +105,25 @@ def signup():
 @login_required
 def logout():
     """Logout handler"""
+    # Clear shopping cart if user is a customer
+    if current_user.is_authenticated and hasattr(current_user, 'is_customer') and current_user.is_customer:
+        try:
+            # Get the customer's cart ID
+            query_cart = """
+                SELECT Cart_ID FROM SHOPPING_CART WHERE Customer_Username = %s
+            """
+            cart = execute_query(query_cart, (current_user.username,), fetch_one=True)
+
+            if cart:
+                # Delete all items from the cart
+                query_delete = """
+                    DELETE FROM CART_ITEM WHERE Cart_ID = %s
+                """
+                execute_query(query_delete, (cart['Cart_ID'],), commit=True)
+        except Exception as e:
+            # Log the error but don't prevent logout
+            print(f"Error clearing cart during logout: {e}")
+
     logout_user()
     flash('You have been logged out successfully.', 'info')
     return redirect(url_for('customer.index'))
