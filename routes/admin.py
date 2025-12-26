@@ -338,3 +338,168 @@ def daily_sales_report():
     flash(f'Sales for {report_date}: ${daily_sales:.2f}', 'info')
     return redirect(url_for('admin.reports'))
 
+
+@admin_bp.route('/manage_publishers_authors')
+@login_required
+@admin_required
+def manage_publishers_authors():
+    """Manage publishers and authors"""
+    # Get all publishers
+    query_publishers = """
+        SELECT p.*, COUNT(b.ISBN) as book_count
+        FROM PUBLISHER p
+        LEFT JOIN BOOK b ON p.Publisher_ID = b.Publisher_ID
+        GROUP BY p.Publisher_ID, p.Name, p.Address, p.Phone_Number
+        ORDER BY p.Name
+    """
+    publishers = execute_query(query_publishers)
+
+    # Get all authors
+    query_authors = """
+        SELECT a.*, COUNT(ba.ISBN) as book_count
+        FROM AUTHOR a
+        LEFT JOIN BOOK_AUTHOR ba ON a.Author_ID = ba.Author_ID
+        GROUP BY a.Author_ID, a.First_Name, a.Last_Name
+        ORDER BY a.Last_Name, a.First_Name
+    """
+    authors = execute_query(query_authors)
+
+    return render_template('admin_templates/manage_publishers_authors.html',
+                         publishers=publishers or [],
+                         authors=authors or [])
+
+
+@admin_bp.route('/add_publisher', methods=['POST'])
+@login_required
+@admin_required
+def add_publisher():
+    """Add a new publisher"""
+    name = request.form.get('name')
+    address = request.form.get('address')
+    phone = request.form.get('phone')
+
+    try:
+        query = """
+            INSERT INTO PUBLISHER (Name, Address, Phone_Number)
+            VALUES (%s, %s, %s)
+        """
+        execute_query(query, (name, address, phone), commit=True)
+        flash('Publisher added successfully!', 'success')
+    except Exception as e:
+        flash(f'Error adding publisher: {str(e)}', 'danger')
+
+    return redirect(url_for('admin.manage_publishers_authors'))
+
+
+@admin_bp.route('/update_publisher', methods=['POST'])
+@login_required
+@admin_required
+def update_publisher():
+    """Update publisher details"""
+    publisher_id = request.form.get('publisher_id')
+    name = request.form.get('name')
+    address = request.form.get('address')
+    phone = request.form.get('phone')
+
+    try:
+        query = """
+            UPDATE PUBLISHER
+            SET Name = %s, Address = %s, Phone_Number = %s
+            WHERE Publisher_ID = %s
+        """
+        execute_query(query, (name, address, phone, publisher_id), commit=True)
+        flash('Publisher updated successfully!', 'success')
+    except Exception as e:
+        flash(f'Error updating publisher: {str(e)}', 'danger')
+
+    return redirect(url_for('admin.manage_publishers_authors'))
+
+
+@admin_bp.route('/delete_publisher/<int:publisher_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_publisher(publisher_id):
+    """Delete a publisher (only if no books are associated)"""
+    try:
+        # Check if publisher has books
+        check_query = "SELECT COUNT(*) as book_count FROM BOOK WHERE Publisher_ID = %s"
+        result = execute_query(check_query, (publisher_id,), fetch_one=True)
+
+        if result['book_count'] > 0:
+            flash('Cannot delete publisher with associated books!', 'danger')
+        else:
+            query = "DELETE FROM PUBLISHER WHERE Publisher_ID = %s"
+            execute_query(query, (publisher_id,), commit=True)
+            flash('Publisher deleted successfully!', 'success')
+    except Exception as e:
+        flash(f'Error deleting publisher: {str(e)}', 'danger')
+
+    return redirect(url_for('admin.manage_publishers_authors'))
+
+
+@admin_bp.route('/add_author', methods=['POST'])
+@login_required
+@admin_required
+def add_author():
+    """Add a new author"""
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+
+    try:
+        query = """
+            INSERT INTO AUTHOR (First_Name, Last_Name)
+            VALUES (%s, %s)
+        """
+        execute_query(query, (first_name, last_name), commit=True)
+        flash('Author added successfully!', 'success')
+    except Exception as e:
+        flash(f'Error adding author: {str(e)}', 'danger')
+
+    return redirect(url_for('admin.manage_publishers_authors'))
+
+
+@admin_bp.route('/update_author', methods=['POST'])
+@login_required
+@admin_required
+def update_author():
+    """Update author details"""
+    author_id = request.form.get('author_id')
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+
+    try:
+        query = """
+            UPDATE AUTHOR
+            SET First_Name = %s, Last_Name = %s
+            WHERE Author_ID = %s
+        """
+        execute_query(query, (first_name, last_name, author_id), commit=True)
+        flash('Author updated successfully!', 'success')
+    except Exception as e:
+        flash(f'Error updating author: {str(e)}', 'danger')
+
+    return redirect(url_for('admin.manage_publishers_authors'))
+
+
+@admin_bp.route('/delete_author/<int:author_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_author(author_id):
+    """Delete an author (only if no books are associated)"""
+    try:
+        # Check if author has books
+        check_query = "SELECT COUNT(*) as book_count FROM BOOK_AUTHOR WHERE Author_ID = %s"
+        result = execute_query(check_query, (author_id,), fetch_one=True)
+
+        if result['book_count'] > 0:
+            flash('Cannot delete author with associated books!', 'danger')
+        else:
+            query = "DELETE FROM AUTHOR WHERE Author_ID = %s"
+            execute_query(query, (author_id,), commit=True)
+            flash('Author deleted successfully!', 'success')
+    except Exception as e:
+        flash(f'Error deleting author: {str(e)}', 'danger')
+
+    return redirect(url_for('admin.manage_publishers_authors'))
+
+

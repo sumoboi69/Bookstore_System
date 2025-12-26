@@ -1,0 +1,260 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary fw-bold"><i class="fas fa-building me-2"></i>Manage Publishers & Authors</h2>
+    <a href="/admin/dashboard" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+    </a>
+</div>
+
+<!-- Publishers Section -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-building me-2"></i>Publishers</h5>
+        <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addPublisherModal">
+            <i class="fas fa-plus me-1"></i>Add Publisher
+        </button>
+    </div>
+    <div class="card-body">
+        {% if publishers %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Books</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for publisher in publishers %}
+                    <tr>
+                        <td>{{ publisher.Publisher_ID }}</td>
+                        <td><strong>{{ publisher.Name }}</strong></td>
+                        <td>{{ publisher.Address or 'N/A' }}</td>
+                        <td>{{ publisher.Phone_Number or 'N/A' }}</td>
+                        <td><span class="badge bg-info">{{ publisher.book_count }} book(s)</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"
+                                    onclick="editPublisher({{ publisher.Publisher_ID }}, '{{ publisher.Name }}', '{{ publisher.Address }}', '{{ publisher.Phone_Number }}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            {% if publisher.book_count == 0 %}
+                            <form method="POST" action="/admin/delete_publisher/{{ publisher.Publisher_ID }}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Are you sure you want to delete this publisher?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No publishers found. Add your first publisher!</div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Authors Section -->
+<div class="card shadow-sm">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-pen-fancy me-2"></i>Authors</h5>
+        <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addAuthorModal">
+            <i class="fas fa-plus me-1"></i>Add Author
+        </button>
+    </div>
+    <div class="card-body">
+        {% if authors %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Books</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for author in authors %}
+                    <tr>
+                        <td>{{ author.Author_ID }}</td>
+                        <td><strong>{{ author.First_Name }} {{ author.Last_Name }}</strong></td>
+                        <td><span class="badge bg-info">{{ author.book_count }} book(s)</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"
+                                    onclick="editAuthor({{ author.Author_ID }}, '{{ author.First_Name }}', '{{ author.Last_Name }}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            {% if author.book_count == 0 %}
+                            <form method="POST" action="/admin/delete_author/{{ author.Author_ID }}" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Are you sure you want to delete this author?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No authors found. Add your first author!</div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Publisher Modal -->
+<div class="modal fade" id="addPublisherModal" tabindex="-1" aria-labelledby="addPublisherModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addPublisherModalLabel">Add New Publisher</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="/admin/add_publisher">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="publisherName" class="form-label">Publisher Name *</label>
+                        <input type="text" class="form-control" id="publisherName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="publisherAddress" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="publisherAddress" name="address">
+                    </div>
+                    <div class="mb-3">
+                        <label for="publisherPhone" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="publisherPhone" name="phone">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Publisher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Publisher Modal -->
+<div class="modal fade" id="editPublisherModal" tabindex="-1" aria-labelledby="editPublisherModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="editPublisherModalLabel">Edit Publisher</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="/admin/update_publisher">
+                <input type="hidden" id="editPublisherId" name="publisher_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editPublisherName" class="form-label">Publisher Name *</label>
+                        <input type="text" class="form-control" id="editPublisherName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPublisherAddress" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="editPublisherAddress" name="address">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPublisherPhone" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="editPublisherPhone" name="phone">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Update Publisher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Author Modal -->
+<div class="modal fade" id="addAuthorModal" tabindex="-1" aria-labelledby="addAuthorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addAuthorModalLabel">Add New Author</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="/admin/add_author">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="authorFirstName" class="form-label">First Name *</label>
+                        <input type="text" class="form-control" id="authorFirstName" name="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="authorLastName" class="form-label">Last Name *</label>
+                        <input type="text" class="form-control" id="authorLastName" name="last_name" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add Author</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Author Modal -->
+<div class="modal fade" id="editAuthorModal" tabindex="-1" aria-labelledby="editAuthorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="editAuthorModalLabel">Edit Author</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="/admin/update_author">
+                <input type="hidden" id="editAuthorId" name="author_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editAuthorFirstName" class="form-label">First Name *</label>
+                        <input type="text" class="form-control" id="editAuthorFirstName" name="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAuthorLastName" class="form-label">Last Name *</label>
+                        <input type="text" class="form-control" id="editAuthorLastName" name="last_name" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Update Author</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function editPublisher(id, name, address, phone) {
+        document.getElementById('editPublisherId').value = id;
+        document.getElementById('editPublisherName').value = name;
+        document.getElementById('editPublisherAddress').value = address || '';
+        document.getElementById('editPublisherPhone').value = phone || '';
+
+        var modal = new bootstrap.Modal(document.getElementById('editPublisherModal'));
+        modal.show();
+    }
+
+    function editAuthor(id, firstName, lastName) {
+        document.getElementById('editAuthorId').value = id;
+        document.getElementById('editAuthorFirstName').value = firstName;
+        document.getElementById('editAuthorLastName').value = lastName;
+
+        var modal = new bootstrap.Modal(document.getElementById('editAuthorModal'));
+        modal.show();
+    }
+</script>
+{% endblock %}
+
