@@ -35,7 +35,7 @@ def index():
 def search():
     """Search for books"""
     search_query = request.args.get('q', '')
-    search_type = request.args.get('search_type', 'title')
+    search_type = request.args.get('search_type', '')
     category = request.args.get('category', '')
 
     books = []
@@ -55,6 +55,14 @@ def search():
         books = execute_query(query, (category,))
 
     elif search_query:
+        # Auto-detect search type if not specified (for navbar search)
+        if not search_type:
+            # If query is all digits, assume ISBN search
+            if search_query.replace('-', '').isdigit():
+                search_type = 'isbn'
+            else:
+                search_type = 'title'
+
         # Search based on type
         if search_type == 'title':
             query = """
@@ -116,7 +124,7 @@ def search():
             JOIN PUBLISHER p ON b.Publisher_ID = p.Publisher_ID
             LEFT JOIN BOOK_AUTHOR ba ON b.ISBN = ba.ISBN
             LEFT JOIN AUTHOR a ON ba.Author_ID = a.Author_ID
-            GROUP BY b.ISBN
+            GROUP BY b.ISBN, b.Title, p.Name
             ORDER BY b.Title
         """
         books = execute_query(query)
