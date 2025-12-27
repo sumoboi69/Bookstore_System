@@ -1,8 +1,8 @@
 --
--- Database DDL for Order Processing System (Online Bookstore) - Fall 2025
+-- Database DDL for Order Processing System (Online Bookstore)
 --
 
--- 1. DROP TABLES (for easy re-running of the script)
+-- 1. DROP TABLES
 DROP TABLE IF EXISTS SALE_ITEM;
 DROP TABLE IF EXISTS SALES_TRANSACTION;
 DROP TABLE IF EXISTS CART_ITEM;
@@ -48,10 +48,7 @@ CREATE TABLE AUTHOR (
     Last_Name VARCHAR(100) NOT NULL
 );
 
--- BOOK_AUTHOR (Many-to-Many relationship)
--- BUSINESS RULE: Every book MUST have at least one author.
--- This is enforced at the application level (admin interface validation).
--- Books can have multiple authors (co-authored works).
+-- BOOK_AUTHOR
 CREATE TABLE BOOK_AUTHOR (
     ISBN VARCHAR(20) NOT NULL,
     Author_ID INT NOT NULL,
@@ -87,7 +84,7 @@ CREATE TABLE ADMIN (
     FOREIGN KEY (Username) REFERENCES USER_ACCOUNT(Username) ON DELETE CASCADE
 );
 
--- 4. PUBLISHER ORDERS (REPLENISHMENT)
+-- 4. PUBLISHER ORDERS
 ------------------------------------------------------------
 
 -- PUBLISHER_ORDER
@@ -151,25 +148,24 @@ CREATE TABLE SALE_ITEM (
     FOREIGN KEY (ISBN) REFERENCES BOOK(ISBN)
 );
 
--- 6. TRIGGERS (for business logic and integrity)
+-- 6. TRIGGERS
 ------------------------------------------------------------
 
--- TRIGGER 1: Prevent negative stock quantity on update/sale (Hint: trigger before update)
+-- TRIGGER 1: Prevent negative stock quantity on update/sale
 DELIMITER //
 CREATE TRIGGER before_book_stock_update
 BEFORE UPDATE ON BOOK
 FOR EACH ROW
 BEGIN
     IF NEW.Stock_Quantity < 0 THEN
-        SIGNAL SQLSTATE '45000'
+        SIGNAL SQLSTATE '45000' -- (45000 is for unhandled user=defined exception) like throws for example.
         SET MESSAGE_TEXT = 'ERROR: Stock quantity cannot be negative.';
     END IF;
 END;
 //
 DELIMITER ;
 
--- TRIGGER 2: Automatic replenishment order placement (Hint: trigger after update on books table)
--- This trigger places an order for a fixed quantity (e.g., 50 copies) if the stock drops below the threshold.
+-- TRIGGER 2: Automatic replenishment order placement
 DELIMITER //
 CREATE TRIGGER after_book_stock_check
 AFTER UPDATE ON BOOK
@@ -215,7 +211,6 @@ END;
 DELIMITER ;
 
 -- TRIGGER 4: Prevent deletion of the last author from a book
--- This enforces the business rule that every book must have at least one author
 DELIMITER //
 CREATE TRIGGER before_book_author_delete
 BEFORE DELETE ON BOOK_AUTHOR
@@ -223,12 +218,11 @@ FOR EACH ROW
 BEGIN
     DECLARE author_count INT;
 
-    -- Count how many authors this book will have after deletion
+
     SELECT COUNT(*) INTO author_count
     FROM BOOK_AUTHOR
     WHERE ISBN = OLD.ISBN AND (ISBN != OLD.ISBN OR Author_ID != OLD.Author_ID);
 
-    -- If this would leave the book with 0 authors, prevent deletion
     IF author_count = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'ERROR: Cannot remove the last author from a book. Every book must have at least one author.';
